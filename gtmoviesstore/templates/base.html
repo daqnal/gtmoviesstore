@@ -75,15 +75,17 @@
           </div>
         </div>
         <a class="nav-link" href="{% url 'movies.index' %}">Movies</a>
+        &nbsp;
         <a class="nav-link" href="{% url 'cart.index' %}">Cart</a>
 
         <div class="vr bg-white mx-2 d-none d-lg-block"></div>
         {% if user.is_authenticated %}
         <a class="nav-link" href="{% url 'accounts.orders' %}">Orders</a>
-
+        &nbsp;
         <a class="nav-link" href="{% url 'accounts.logout' %}">Logout ({{user.username }})</a>
         {% else %}
         <a class="nav-link" href="{% url 'accounts.login' %}">Login</a>
+        &nbsp;
         <a class="nav-link" href="{% url 'accounts.signup' %}">
           Sign Up
         </a>
@@ -94,18 +96,20 @@
     <!-- Header -->
 
 
-    <div>{% block content %} {% endblock content %}</div>
+    <div>{% block content %}
+      
+      {% endblock content %}</div>
 
     <!-- Footer -->
     <section class="p-3 ms-footer d-none d-md-block">
       <div class="container">
         <div class="row mt-3 text-white">
           <div class="col-md-6 col-lg-6 col-xl-6 mx-auto mb-4">
-            <b>MOVIES STORE</b>
+            <b>GT MOVIES STORE</b>
             <hr />
             <p>
 
-              Welcome to Movies Store, your premier online
+              Welcome to the GT Movies Store, your premier online
 
               destination for a cinematic adventure like no
 
@@ -123,18 +127,15 @@
             <p><a class="nav-link" href="{% url 'home.about' %}">
               About
             </a></p>
+            <p><a class="nav-link" href="{% url 'movies.index' %}">
+              Movies
+            </a></p>
           </div>
           <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mb-4">
             <b>CONTACT</b>
             <hr />
-            <p><i class="fas fa-home me-2"></i>
-              150-2345 Tokyo-to, Japan
-            </p>
             <p><i class="fas fa-envelope me-2"></i>
-              info@moviesstore.com
-            </p>
-            <p><i class="fas fa-phone me-2"></i>
-              +81 03-3333-3333
+              info@gtmoviesstore.com
             </p>
           </div>
         </div>
@@ -148,9 +149,13 @@
             <a href="https://www.x.com/danielgarax" target="_blank">DANIEL CORREA</a> &
             <a href="https://www.x.com/greglim81" target="_blank">GREG LIM</a>
           </span>
+          <span>
+            | TWEAKED BY
+            <a href="https://hexaflexagon-gold-5228.squarespace.com/" target="_blank">DANIEL DURLING</a>
+          </span>
         </div>
         <div class="text-white">
-          <span>© Copyright - 2024</span>
+          <span>© Copyright - 2025</span>
         </div>
       </div>
     </section>
