@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Movie, Review
+from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 
 
@@ -19,7 +20,14 @@ def index(request):
 
 def show(request, id):
     movie = Movie.objects.get(id=id)
-    reviews = Review.objects.filter(movie=movie)
+    # Annotate reviews with likes count and order by most liked first, then newest
+    reviews = (
+        Review.objects.filter(movie=movie)
+        .annotate(likes_count=Count("likes"))
+        .order_by("-likes_count", "-date")
+        .select_related("user")
+        .prefetch_related("likes")
+    )
     template_data = {}
     template_data["title"] = movie.name
     template_data["movie"] = movie
@@ -73,3 +81,18 @@ def delete_review(request, id, review_id):
     review.delete()
 
     return redirect("movies.show", id=id)
+
+@login_required
+def like_review(request, id, review_id):
+    review = get_object_or_404(Review, id=review_id)
+
+    # Toggle like: if user already liked the review, remove it; otherwise add it
+    if request.user in review.likes.all():
+        review.likes.remove(request.user)
+    else:
+        review.likes.add(request.user)
+
+    return redirect("movies.show", id=id)
+
+
+# Note: unlike/dislike feature removed. Likes are toggled via `like_review`.
