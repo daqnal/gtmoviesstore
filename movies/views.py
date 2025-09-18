@@ -20,13 +20,13 @@ def index(request):
 
 def show(request, id):
     movie = Movie.objects.get(id=id)
-    # Annotate reviews with likes count and order by most liked first, then newest
+    # Fetch top-level reviews (parent is null) and prefetch replies
     reviews = (
-        Review.objects.filter(movie=movie)
+        Review.objects.filter(movie=movie, parent__isnull=True)
         .annotate(likes_count=Count("likes"))
         .order_by("-likes_count", "-date")
         .select_related("user")
-        .prefetch_related("likes")
+        .prefetch_related("likes", "replies__user", "replies__likes")
     )
     template_data = {}
     template_data["title"] = movie.name
@@ -48,6 +48,25 @@ def create_review(request, id):
 
     else:
         return redirect("movies.show", id=id)
+
+
+@login_required
+def create_reply(request, id, review_id):
+    """Create a reply to an existing review (one-level threading).
+
+    POST params: comment
+    """
+    if request.method == "POST" and request.POST.get("comment"):
+        movie = Movie.objects.get(id=id)
+        parent_review = get_object_or_404(Review, id=review_id, movie=movie)
+        reply = Review()
+        reply.comment = request.POST["comment"]
+        reply.movie = movie
+        reply.user = request.user
+        reply.parent = parent_review
+        reply.save()
+
+    return redirect("movies.show", id=id)
 
 
 @login_required

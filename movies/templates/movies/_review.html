@@ -1,0 +1,40 @@
+<li class="list-group-item pb-3 pt-3">
+  <h5 class="card-title">Review by {{ review.user.username }}</h5>
+  <h6 class="card-subtitle mb-2 text-muted">{{ review.date }}</h6>
+  <p class="card-text">{{ review.comment }}</p>
+
+  <div class="mt-2">
+    {% if user.is_authenticated and user == review.user %}
+    <a class="btn btn-primary" href="{% url 'movies.edit_review' id=template_data.movie.id review_id=review.id %}">Edit</a>
+    <a class="btn btn-danger" href="{% url 'movies.delete_review' id=template_data.movie.id review_id=review.id %}">Delete</a>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'movies.like_review' id=template_data.movie.id review_id=review.id %}" style="display:inline">
+      {% csrf_token %}
+      <button class="btn btn-success" type="submit">{% if user in review.likes.all %}Unlike{% else %}Like{% endif %} ({% if review.likes_count is not None %}{{ review.likes_count }}{% else %}{{ review.likes.count }}{% endif %})</button>
+    </form>
+    {% endif %}
+  </div>
+
+  <!-- Replies -->
+  {% if review.replies.all %}
+  <ul class="list-group mt-3 ms-3">
+    {% for reply in review.replies.all %}
+      {% include 'movies/_review.html' with review=reply template_data=template_data %}
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if user.is_authenticated and review.id %}
+  <div class="mt-2">
+    <form method="post" action="{% url 'movies.create_reply' id=template_data.movie.id review_id=review.id %}">
+      {% csrf_token %}
+      <div class="mb-2">
+        <textarea name="comment" class="form-control" rows="2" placeholder="Reply to this review"></textarea>
+      </div>
+      <button type="submit" class="btn btn-sm btn-secondary">Reply</button>
+    </form>
+  </div>
+  {% endif %}
+</li>

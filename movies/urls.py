@@ -20,4 +20,9 @@ urlpatterns = [
         views.like_review,
         name="movies.like_review",
     ),
+    path(
+        "<int:id>/review/<int:review_id>/reply/",
+        views.create_reply,
+        name="movies.create_reply",
+    ),
 ]

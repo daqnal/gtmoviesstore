@@ -17,6 +17,10 @@ class Review(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # parent review for threaded replies (nullable for top-level reviews)
+    parent = models.ForeignKey(
+        "self", null=True, blank=True, on_delete=models.CASCADE, related_name="replies"
+    )
     # Users who liked this review
     likes = models.ManyToManyField(User, related_name="review_likes", blank=True)
     # Note: dislike/unlike removed — only likes are kept
